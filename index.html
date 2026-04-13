@@ -1,264 +1,310 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal Investigador por Categoría</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personal Investigador por Categoría — UCM</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f0ede8;padding:16px;color:#2c2c2a}
+.wrap{max-width:1100px;margin:0 auto;background:#fff;border-radius:10px;overflow:hidden;border:0.5px solid #d3d1c7}
+.header{background:#444441;padding:18px 24px;color:#fff}
+.header h1{font-size:20px;font-weight:500;margin-bottom:2px}
+.header p{font-size:12px;opacity:0.75}
+.content{padding:20px 24px}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.metric{background:#f1efe8;border-radius:8px;padding:12px 14px}
+.metric-label{font-size:11px;color:#888780;margin-bottom:4px}
+.metric-value{font-size:22px;font-weight:500;color:#2c2c2a}
+.metric-sub{font-size:11px;color:#888780;margin-top:2px}
+.controls{background:#f1efe8;border-radius:8px;padding:14px;margin-bottom:18px;display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end}
+.ctrl-group{}
+.ctrl-label{font-size:11px;font-weight:500;color:#5f5e5a;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.04em}
+.btn-row{display:flex;gap:5px;flex-wrap:wrap}
+button{padding:5px 11px;font-size:11px;font-weight:500;border-radius:5px;cursor:pointer;border:0.5px solid #b4b2a9;background:#fff;color:#444441;transition:all 0.15s}
+button:hover{background:#e8e5df}
+button.active{background:#444441;color:#fff;border-color:#444441}
+button.dl{background:#3b6d11;color:#fff;border-color:#3b6d11}
+button.dl:hover{background:#27500a}
+.chart-wrap{position:relative;width:100%;height:340px;background:#fff;border-radius:8px;border:0.5px solid #d3d1c7;padding:16px;margin-bottom:18px}
+.legend{display:flex;gap:16px;font-size:12px;color:#5f5e5a;justify-content:center;margin-top:10px}
+.legend span{display:flex;align-items:center;gap:5px}
+.leg-sq{width:11px;height:11px;border-radius:2px;flex-shrink:0}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead tr{background:#444441;color:#fff}
+th{padding:8px 10px;font-weight:500;font-size:11px;text-align:left}
+th.r{text-align:right}
+td{padding:7px 10px;color:#2c2c2a}
+td.r{text-align:right}
+tr:nth-child(even) td{background:#fafaf8}
+tr:hover td{background:#f1efe8}
+.tfoot td{background:#d3d1c7!important;font-weight:500;color:#2c2c2a}
+.h-val{color:#185fa5;font-weight:500}
+.m-val{color:#ba7517;font-weight:500}
+.t-val{color:#444441;font-weight:500}
+.pct-bar{display:inline-block;height:6px;border-radius:3px;vertical-align:middle;margin-right:5px}
+footer{padding:12px 24px;background:#f1efe8;border-top:0.5px solid #d3d1c7;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px}
+footer p{font-size:11px;color:#888780}
+footer a{color:#185fa5;text-decoration:none;font-size:11px}
+footer a:hover{text-decoration:underline}
+@media(max-width:640px){.metrics{grid-template-columns:repeat(2,1fr)}.metric-value{font-size:18px}}
+</style>
 </head>
-<body style="margin:0;padding:15px;font-family:Arial,sans-serif;background:#f5f5f5">
-<div style="max-width:1200px;margin:0 auto;background:white;border-radius:8px;padding:20px;box-shadow:0 2px 15px rgba(0,0,0,0.08)">
+<body>
+<div class="wrap">
+<div class="header">
+  <h1>Personal Investigador por Categoría</h1>
+  <p>Universidad Complutense de Madrid · Datos a abril 2026</p>
+</div>
+<div class="content">
 
-<div style="background:linear-gradient(135deg,#979492 0%,#6b6967 100%);padding:15px 20px;border-radius:6px;margin:-20px -20px 15px -20px;color:white">
-<h1 style="margin:0 0 4px 0;font-size:22px;font-weight:600">Personal Investigador por Categoría</h1>
-<p style="margin:0;font-size:12px;opacity:0.9">Universidad Complutense de Madrid · PEI/PTA</p>
+<div class="metrics" id="metrics"></div>
+
+<div class="controls">
+  <div class="ctrl-group">
+    <div class="ctrl-label">Tipo de gráfico</div>
+    <div class="btn-row">
+      <button class="active" onclick="changeChart('bar',this)">Barras verticales</button>
+      <button onclick="changeChart('hbar',this)">Barras horizontales</button>
+      <button onclick="changeChart('pie',this)">Circular</button>
+    </div>
+  </div>
+  <div class="ctrl-group">
+    <div class="ctrl-label">Mostrar</div>
+    <div class="btn-row">
+      <button class="active" id="btnH" onclick="toggleSeries('h')">Hombres</button>
+      <button class="active" id="btnM" onclick="toggleSeries('m')">Mujeres</button>
+    </div>
+  </div>
+  <div class="ctrl-group">
+    <div class="ctrl-label">Ordenar por</div>
+    <div class="btn-row">
+      <button class="active" id="sA" onclick="setSort('a')">A–Z</button>
+      <button id="sT" onclick="setSort('t')">Total</button>
+      <button id="sH" onclick="setSort('h')">Hombres</button>
+      <button id="sM" onclick="setSort('m')">Mujeres</button>
+    </div>
+  </div>
+  <div class="ctrl-group">
+    <div class="ctrl-label">Exportar</div>
+    <div class="btn-row">
+      <button class="dl" onclick="downloadCSV()">Descargar CSV</button>
+    </div>
+  </div>
 </div>
 
-<div style="background:#f8f9fa;border-radius:6px;padding:12px;margin-bottom:15px;border-left:3px solid #979492">
-<div style="margin-bottom:10px">
-<label style="display:block;font-weight:600;color:#333;margin-bottom:6px;font-size:12px">TIPO DE GRÁFICO</label>
-<button onclick="changeChart('bar')" id="btn1" style="padding:6px 12px;background:#979492;color:white;border:none;border-radius:4px;cursor:pointer;font-size:12px;font-weight:500;margin-right:6px">Barras</button>
-<button onclick="changeChart('horizontalBar')" id="btn2" style="padding:6px 12px;background:#e0e0e0;color:#333;border:none;border-radius:4px;cursor:pointer;font-size:12px;font-weight:500;margin-right:6px">Barras Horizontales</button>
-<button onclick="changeChart('pie')" id="btn3" style="padding:6px 12px;background:#e0e0e0;color:#333;border:none;border-radius:4px;cursor:pointer;font-size:12px;font-weight:500;margin-right:6px">Circular</button>
-<button onclick="downloadData()" style="padding:6px 12px;background:#9B8942;color:white;border:none;border-radius:4px;cursor:pointer;font-size:12px;font-weight:500">💾 CSV</button>
+<div class="chart-wrap">
+  <canvas id="chart" role="img" aria-label="Gráfico de personal investigador UCM por categoría, hombres y mujeres.">Personal investigador UCM por categoría.</canvas>
 </div>
-<label style="display:block;font-weight:600;color:#333;margin-bottom:6px;font-size:12px">OPCIONES</label>
-<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">
-<button onclick="toggleGender('hombre')" id="btnHombre" style="padding:6px 12px;background:#28a74520;border:2px solid #28a745;color:#333;border-radius:4px;cursor:pointer;font-size:11px;font-weight:500">👨 Hombres</button>
-<button onclick="toggleGender('mujer')" id="btnMujer" style="padding:6px 12px;background:#fd7e1420;border:2px solid #fd7e14;color:#333;border-radius:4px;cursor:pointer;font-size:11px;font-weight:500">👩 Mujeres</button>
-</div>
-<label style="display:block;font-weight:600;color:#333;margin-bottom:6px;font-size:12px">ORDENAR POR</label>
-<div style="display:flex;gap:6px">
-<button onclick="sortBy('alfabetico')" id="sortAlf" style="padding:6px 12px;background:#979492;color:white;border:none;border-radius:4px;cursor:pointer;font-size:11px;font-weight:500">A-Z</button>
-<button onclick="sortBy('total')" id="sortTotal" style="padding:6px 12px;background:#e0e0e0;color:#333;border:none;border-radius:4px;cursor:pointer;font-size:11px;font-weight:500">Total</button>
-<button onclick="sortBy('hombres')" id="sortHombre" style="padding:6px 12px;background:#e0e0e0;color:#333;border:none;border-radius:4px;cursor:pointer;font-size:11px;font-weight:500">Hombres</button>
-<button onclick="sortBy('mujeres')" id="sortMujer" style="padding:6px 12px;background:#e0e0e0;color:#333;border:none;border-radius:4px;cursor:pointer;font-size:11px;font-weight:500">Mujeres</button>
-</div>
+<div class="legend" id="legend"></div>
+
+<div style="margin-top:20px">
+  <table>
+    <thead>
+      <tr>
+        <th>Categoría</th>
+        <th class="r" style="color:#85b7eb">Hombres</th>
+        <th class="r" style="color:#fac775">Mujeres</th>
+        <th class="r">% Mujeres</th>
+        <th class="r">Total</th>
+        <th style="min-width:120px">Distribución</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+    <tfoot id="tfoot"></tfoot>
+  </table>
 </div>
 
-<div style="background:white;padding:12px;border-radius:6px;margin-bottom:15px;box-shadow:0 1px 6px rgba(151,148,146,0.12)">
-<canvas id="chart"></canvas>
 </div>
-
-<div style="background:white;padding:15px;border-radius:6px;box-shadow:0 1px 6px rgba(151,148,146,0.12);overflow-x:auto">
-<h3 style="margin:0 0 10px 0;color:#6b6967;font-size:16px">Tabla de datos</h3>
-<div id="table"></div>
-</div>
-
-<p style="text-align:center;color:#979492;font-size:11px;margin-top:12px">Portal de Transparencia UCM · Datos actualizados: Enero 2026</p>
-
+<footer>
+  <p>Portal de Transparencia UCM · Fuente: <a href="https://www.ucm.es/pinves" target="_blank">Servicio de Personal Investigador</a> · Datos actualizados: abril 2026</p>
+</footer>
 </div>
 
 <script>
-let c,chartType='bar',sortOrder='alfabetico';
-let showHombre=true,showMujer=true;
-let originalData=[
-{cat:'Asimilado FPI/FPU',h:208,m:231,t:439},
-{cat:'Asimilado RC/JC',h:18,m:11,t:29},
-{cat:'Contratado por proyecto',h:185,m:211,t:396},
-{cat:'FPI',h:69,m:80,t:149},
-{cat:'FPU',h:114,m:88,t:202},
-{cat:'Investigador distinguido',h:3,m:2,t:5},
-{cat:'Juan de la Cierva',h:10,m:5,t:15},
-{cat:'Marie Curie',h:4,m:5,t:9},
-{cat:'Personal Técnico',h:34,m:43,t:77},
-{cat:'Ramón y Cajal',h:33,m:27,t:60},
-{cat:'Técnico',h:4,m:5,t:9},
-{cat:'UNA FOR CAREER',h:4,m:3,t:7}
+const raw = [
+  {cat:'Predoctorales',        h:419, m:420, t:839},
+  {cat:'Postdoctorales',       h:68,  m:44,  t:112},
+  {cat:'Inv. Postdoc. Distinguido', h:3, m:2, t:5},
+  {cat:'Contratado por proyecto', h:196, m:231, t:427},
+  {cat:'Personal Técnico Emp. Joven CM', h:26, m:40, t:66},
+  {cat:'Personal Técnico Apoyo MICIU', h:4, m:5, t:9}
 ];
 
-function getSortedData(){
-let data=[...originalData];
-if(sortOrder=='total')data.sort((a,b)=>b.t-a.t);
-else if(sortOrder=='hombres')data.sort((a,b)=>b.h-a.h);
-else if(sortOrder=='mujeres')data.sort((a,b)=>b.m-a.m);
-else data.sort((a,b)=>a.cat.localeCompare(b.cat));
-return data;
+const COLORS = {h:'#185fa5', m:'#ba7517'};
+let chartType='bar', sortKey='a', showH=true, showM=true;
+let chartInst = null;
+
+const totalH = raw.reduce((s,d)=>s+d.h,0);
+const totalM = raw.reduce((s,d)=>s+d.m,0);
+const totalT = raw.reduce((s,d)=>s+d.t,0);
+const pctF = Math.round(totalM/totalT*100);
+
+function sorted(){
+  const d=[...raw];
+  if(sortKey==='t') d.sort((a,b)=>b.t-a.t);
+  else if(sortKey==='h') d.sort((a,b)=>b.h-a.h);
+  else if(sortKey==='m') d.sort((a,b)=>b.m-a.m);
+  else d.sort((a,b)=>a.cat.localeCompare(b.cat,'es'));
+  return d;
 }
 
-function init(){
-let data=getSortedData();
-let labels=data.map(d=>d.cat);
-let datasets=[];
-
-if(showHombre){
-datasets.push({
-label:'Hombres',
-data:data.map(d=>d.h),
-backgroundColor:'#28a745',
-borderColor:'#28a745',
-borderWidth:1
-});
+function buildMetrics(){
+  document.getElementById('metrics').innerHTML=`
+    <div class="metric"><div class="metric-label">Total personal investigador</div><div class="metric-value">${totalT.toLocaleString('es-ES')}</div><div class="metric-sub">personas</div></div>
+    <div class="metric"><div class="metric-label">Hombres</div><div class="metric-value" style="color:#185fa5">${totalH.toLocaleString('es-ES')}</div><div class="metric-sub">${Math.round(totalH/totalT*100)}% del total</div></div>
+    <div class="metric"><div class="metric-label">Mujeres</div><div class="metric-value" style="color:#ba7517">${totalM.toLocaleString('es-ES')}</div><div class="metric-sub">${pctF}% del total</div></div>
+    <div class="metric"><div class="metric-label">Categorías</div><div class="metric-value">${raw.length}</div><div class="metric-sub">tipos de contrato</div></div>
+  `;
 }
 
-if(showMujer){
-datasets.push({
-label:'Mujeres',
-data:data.map(d=>d.m),
-backgroundColor:'#fd7e14',
-borderColor:'#fd7e14',
-borderWidth:1
-});
+function buildChart(){
+  const d=sorted();
+  const labels=d.map(r=>r.cat);
+  const datasets=[];
+  if(chartType==='pie'){
+    const pieData=d.map(r=>(showH&&showM)?r.t:showH?r.h:r.m);
+    const colors=['#185fa5','#ba7517','#3b6d11','#a32d2d','#534ab7','#0f6e56'];
+    datasets.push({data:pieData,backgroundColor:colors,borderWidth:2,borderColor:'#fff'});
+  } else {
+    if(showH) datasets.push({label:'Hombres',data:d.map(r=>r.h),backgroundColor:'#378add',borderColor:'#185fa5',borderWidth:1,borderRadius:3,barPercentage:0.7,categoryPercentage:0.75});
+    if(showM) datasets.push({label:'Mujeres',data:d.map(r=>r.m),backgroundColor:'#ef9f27',borderColor:'#ba7517',borderWidth:1,borderRadius:3,barPercentage:0.7,categoryPercentage:0.75});
+  }
+
+  const ctx=document.getElementById('chart').getContext('2d');
+  if(chartInst) chartInst.destroy();
+
+  const isHBar=chartType==='hbar';
+  const isPie=chartType==='pie';
+
+  chartInst=new Chart(ctx,{
+    type: isPie?'pie':isHBar?'bar':'bar',
+    data:{labels,datasets},
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      indexAxis: isHBar?'y':'x',
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'rgba(44,44,42,0.95)',
+          padding:10,
+          titleFont:{size:11},
+          bodyFont:{size:11},
+          callbacks:{
+            afterBody: isPie ? undefined : function(items){
+              const idx=items[0].dataIndex;
+              const row=d[idx];
+              const pct=Math.round(row.m/row.t*100);
+              return [`Total: ${row.t.toLocaleString('es-ES')}`,`% Mujeres: ${pct}%`];
+            }
+          }
+        }
+      },
+      scales: isPie?{}:{
+        x:isHBar?{
+          beginAtZero:true,
+          grid:{color:'rgba(0,0,0,0.06)'},
+          ticks:{font:{size:10},callback:v=>v.toLocaleString('es-ES')}
+        }:{
+          grid:{display:false},
+          ticks:{font:{size:10,weight:'500'},maxRotation:40,minRotation:40,autoSkip:false}
+        },
+        y:isHBar?{
+          grid:{display:false},
+          ticks:{font:{size:10,weight:'500'}}
+        }:{
+          beginAtZero:true,
+          grid:{color:'rgba(0,0,0,0.06)'},
+          ticks:{font:{size:10},callback:v=>v.toLocaleString('es-ES')}
+        }
+      }
+    }
+  });
+
+  buildLegend(d,isPie);
 }
 
-let ctx=document.getElementById('chart').getContext('2d');
-if(c)c.destroy();
-
-let config={
-type:chartType=='horizontalBar'?'bar':chartType,
-data:{labels:labels,datasets:datasets},
-options:{
-responsive:true,
-maintainAspectRatio:true,
-indexAxis:chartType=='horizontalBar'?'y':'x',
-plugins:{
-legend:{
-display:chartType!='pie',
-position:'bottom',
-labels:{padding:8,font:{size:10,weight:'500'},color:'#333',boxWidth:10,boxHeight:10}
-},
-tooltip:{
-backgroundColor:'rgba(107,105,103,0.95)',
-padding:10,
-titleFont:{size:11},
-bodyFont:{size:11},
-titleColor:'#fff',
-bodyColor:'#fff',
-borderColor:'#979492',
-borderWidth:1,
-callbacks:{
-footer:function(items){
-let total=0;
-items.forEach(i=>total+=i.parsed.y||i.parsed.x||i.parsed);
-return '\nTotal: '+total.toLocaleString('es-ES');
-}
-}
-}
-},
-scales:chartType!='pie'?{
-y:{
-beginAtZero:true,
-grid:{color:'rgba(151,148,146,0.1)'},
-ticks:{font:{size:9},color:'#333',callback:v=>v.toLocaleString('es-ES')}
-},
-x:{
-grid:{display:false},
-ticks:{
-font:{size:9,weight:'500'},
-color:'#333',
-maxRotation:45,
-minRotation:45
-}
-}
-}:{}
-}
-};
-
-if(chartType=='horizontalBar'){
-config.options.scales={
-x:{
-beginAtZero:true,
-grid:{color:'rgba(151,148,146,0.1)'},
-ticks:{font:{size:9},color:'#333',callback:v=>v.toLocaleString('es-ES')}
-},
-y:{
-grid:{display:false},
-ticks:{font:{size:9,weight:'500'},color:'#333'}
-}
-};
+function buildLegend(d,isPie){
+  const lg=document.getElementById('legend');
+  if(isPie){
+    const colors=['#185fa5','#ba7517','#3b6d11','#a32d2d','#534ab7','#0f6e56'];
+    lg.innerHTML=d.map((r,i)=>`<span><span class="leg-sq" style="background:${colors[i]}"></span>${r.cat} (${r.t})</span>`).join('');
+  } else {
+    const items=[];
+    if(showH) items.push(`<span><span class="leg-sq" style="background:#378add"></span>Hombres (${totalH.toLocaleString('es-ES')})</span>`);
+    if(showM) items.push(`<span><span class="leg-sq" style="background:#ef9f27"></span>Mujeres (${totalM.toLocaleString('es-ES')})</span>`);
+    lg.innerHTML=items.join('');
+  }
 }
 
-c=new Chart(ctx,config);
+function buildTable(){
+  const d=sorted();
+  const tbody=document.getElementById('tbody');
+  tbody.innerHTML=d.map(r=>{
+    const pct=Math.round(r.m/r.t*100);
+    const barW=Math.round(r.t/totalT*100);
+    return `<tr>
+      <td><strong style="font-weight:500">${r.cat}</strong></td>
+      <td class="r h-val">${r.h.toLocaleString('es-ES')}</td>
+      <td class="r m-val">${r.m.toLocaleString('es-ES')}</td>
+      <td class="r" style="color:#5f5e5a">${pct}%</td>
+      <td class="r t-val">${r.t.toLocaleString('es-ES')}</td>
+      <td><div style="display:flex;align-items:center;gap:3px">
+        <span class="pct-bar" style="width:${Math.round(r.h/r.t*barW)}px;background:#378add"></span>
+        <span class="pct-bar" style="width:${Math.round(r.m/r.t*barW)}px;background:#ef9f27"></span>
+      </div></td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('tfoot').innerHTML=`<tr class="tfoot">
+    <td><strong>TOTAL</strong></td>
+    <td class="r">${totalH.toLocaleString('es-ES')}</td>
+    <td class="r">${totalM.toLocaleString('es-ES')}</td>
+    <td class="r">${pctF}%</td>
+    <td class="r">${totalT.toLocaleString('es-ES')}</td>
+    <td></td>
+  </tr>`;
 }
 
-function changeChart(type){
-chartType=type;
-document.getElementById('btn1').style.background=type=='bar'?'#979492':'#e0e0e0';
-document.getElementById('btn1').style.color=type=='bar'?'white':'#333';
-document.getElementById('btn2').style.background=type=='horizontalBar'?'#979492':'#e0e0e0';
-document.getElementById('btn2').style.color=type=='horizontalBar'?'white':'#333';
-document.getElementById('btn3').style.background=type=='pie'?'#979492':'#e0e0e0';
-document.getElementById('btn3').style.color=type=='pie'?'white':'#333';
-init();
+function changeChart(type,btn){
+  chartType=type;
+  document.querySelectorAll('.controls button:not(.dl):not(#btnH):not(#btnM):not(#sA):not(#sT):not(#sH):not(#sM)').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  buildChart();
 }
 
-function toggleGender(gender){
-if(gender=='hombre'){
-showHombre=!showHombre;
-document.getElementById('btnHombre').style.opacity=showHombre?'1':'0.4';
-}else{
-showMujer=!showMujer;
-document.getElementById('btnMujer').style.opacity=showMujer?'1':'0.4';
-}
-init();
-updateTable();
+function toggleSeries(s){
+  if(s==='h'){showH=!showH;document.getElementById('btnH').classList.toggle('active',showH);}
+  else{showM=!showM;document.getElementById('btnM').classList.toggle('active',showM);}
+  buildChart();buildTable();
 }
 
-function sortBy(order){
-sortOrder=order;
-document.getElementById('sortAlf').style.background=order=='alfabetico'?'#979492':'#e0e0e0';
-document.getElementById('sortAlf').style.color=order=='alfabetico'?'white':'#333';
-document.getElementById('sortTotal').style.background=order=='total'?'#979492':'#e0e0e0';
-document.getElementById('sortTotal').style.color=order=='total'?'white':'#333';
-document.getElementById('sortHombre').style.background=order=='hombres'?'#979492':'#e0e0e0';
-document.getElementById('sortHombre').style.color=order=='hombres'?'white':'#333';
-document.getElementById('sortMujer').style.background=order=='mujeres'?'#979492':'#e0e0e0';
-document.getElementById('sortMujer').style.color=order=='mujeres'?'white':'#333';
-init();
-updateTable();
+function setSort(k){
+  sortKey=k;
+  ['sA','sT','sH','sM'].forEach(id=>document.getElementById(id).classList.remove('active'));
+  document.getElementById('s'+k.toUpperCase()).classList.add('active');
+  buildChart();buildTable();
 }
 
-function updateTable(){
-let data=getSortedData();
-let h='<table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="background:linear-gradient(135deg,#979492,#6b6967);color:white">';
-h+='<th style="padding:8px;text-align:left;font-weight:600;font-size:11px">Categoría</th>';
-if(showHombre)h+='<th style="padding:8px;text-align:right;font-weight:600;font-size:11px;background:rgba(40,167,69,0.3)">Hombres</th>';
-if(showMujer)h+='<th style="padding:8px;text-align:right;font-weight:600;font-size:11px;background:rgba(253,126,20,0.3)">Mujeres</th>';
-h+='<th style="padding:8px;text-align:right;background:rgba(0,0,0,0.15);font-weight:600;font-size:11px">TOTAL</th></tr></thead><tbody>';
-
-data.forEach((d,i)=>{
-let bg=i%2?'white':'#fafafa';
-h+='<tr style="background:'+bg+';transition:background 0.2s" onmouseover="this.style.background=\'#f5f5f5\'" onmouseout="this.style.background=\''+bg+'\'"><td style="padding:7px;font-weight:500;color:#6b6967;font-size:11px">'+d.cat+'</td>';
-if(showHombre)h+='<td style="padding:7px;text-align:right;color:#28a745;font-weight:500">'+d.h.toLocaleString('es-ES')+'</td>';
-if(showMujer)h+='<td style="padding:7px;text-align:right;color:#fd7e14;font-weight:500">'+d.m.toLocaleString('es-ES')+'</td>';
-h+='<td style="padding:7px;text-align:right;font-weight:700;background:rgba(151,148,146,0.08);color:#6b6967">'+d.t.toLocaleString('es-ES')+'</td></tr>';
-});
-
-let totalH=originalData.reduce((sum,d)=>sum+d.h,0);
-let totalM=originalData.reduce((sum,d)=>sum+d.m,0);
-let totalT=originalData.reduce((sum,d)=>sum+d.t,0);
-
-h+='<tr style="background:#e8e8e8;font-weight:700"><td style="padding:10px;color:#6b6967;font-size:12px">TOTAL</td>';
-if(showHombre)h+='<td style="padding:10px;text-align:right;color:#28a745;font-size:12px">'+totalH.toLocaleString('es-ES')+'</td>';
-if(showMujer)h+='<td style="padding:10px;text-align:right;color:#fd7e14;font-size:12px">'+totalM.toLocaleString('es-ES')+'</td>';
-h+='<td style="padding:10px;text-align:right;background:rgba(151,148,146,0.15);color:#6b6967;font-size:12px">'+totalT.toLocaleString('es-ES')+'</td></tr>';
-
-h+='</tbody></table>';
-document.getElementById('table').innerHTML=h;
+function downloadCSV(){
+  const d=sorted();
+  let csv='Categoría,Hombres,Mujeres,% Mujeres,Total\n';
+  d.forEach(r=>{
+    const pct=Math.round(r.m/r.t*100);
+    csv+=`"${r.cat}",${r.h},${r.m},${pct}%,${r.t}\n`;
+  });
+  csv+=`TOTAL,${totalH},${totalM},${pctF}%,${totalT}\n`;
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent('\uFEFF'+csv);
+  a.download='personal_investigador_ucm_abril2026.csv';
+  a.click();
 }
 
-function downloadData(){
-let data=getSortedData();
-let csv='Categoría';
-if(showHombre)csv+=',Hombres';
-if(showMujer)csv+=',Mujeres';
-csv+=',Total\n';
-data.forEach(d=>{
-csv+=d.cat;
-if(showHombre)csv+=','+d.h;
-if(showMujer)csv+=','+d.m;
-csv+=','+d.t+'\n';
-});
-let blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
-let url=window.URL.createObjectURL(blob);
-let a=document.createElement('a');
-a.href=url;
-a.download='personal_investigador_ucm.csv';
-a.click();
-}
-
-init();
-updateTable();
+buildMetrics();
+buildChart();
+buildTable();
 </script>
 </body>
 </html>
