@@ -9,9 +9,9 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Arial,sans-serif;background:#f0ede8;padding:16px;color:#2c2c2a}
 .wrap{max-width:1100px;margin:0 auto;background:#fff;border-radius:10px;overflow:hidden;border:0.5px solid #d3d1c7}
-.header{background:#444441;padding:18px 24px;color:#fff}
+.header{background:linear-gradient(135deg,#1E7A34 0%,#0F4D20 100%);padding:18px 24px;color:#fff}
 .header h1{font-size:20px;font-weight:500;margin-bottom:2px}
-.header p{font-size:12px;opacity:0.75}
+.header p{font-size:12px;opacity:0.85}
 .content{padding:20px 24px}
 .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
 .metric{background:#f1efe8;border-radius:8px;padding:12px 14px}
@@ -22,31 +22,31 @@ body{font-family:Arial,sans-serif;background:#f0ede8;padding:16px;color:#2c2c2a}
 .ctrl-group{}
 .ctrl-label{font-size:11px;font-weight:500;color:#5f5e5a;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.04em}
 .btn-row{display:flex;gap:5px;flex-wrap:wrap}
-button{padding:5px 11px;font-size:11px;font-weight:500;border-radius:5px;cursor:pointer;border:0.5px solid #b4b2a9;background:#fff;color:#444441;transition:all 0.15s}
+button{padding:5px 11px;font-size:11px;font-weight:500;border-radius:5px;cursor:pointer;border:0.5px solid #b4b2a9;background:#fff;color:#1E7A34;transition:all 0.15s}
 button:hover{background:#e8e5df}
-button.active{background:#444441;color:#fff;border-color:#444441}
-button.dl{background:#3b6d11;color:#fff;border-color:#3b6d11}
-button.dl:hover{background:#27500a}
+button.active{background:#1E7A34;color:#fff;border-color:#1E7A34}
+button.dl{background:#1E7A34;color:#fff;border-color:#1E7A34}
+button.dl:hover{background:#0F4D20}
 .chart-wrap{position:relative;width:100%;height:340px;background:#fff;border-radius:8px;border:0.5px solid #d3d1c7;padding:16px;margin-bottom:18px}
-.legend{display:flex;gap:16px;font-size:12px;color:#5f5e5a;justify-content:center;margin-top:10px}
+.legend{display:flex;gap:16px;font-size:12px;color:#5f5e5a;justify-content:center;margin-top:10px;flex-wrap:wrap}
 .legend span{display:flex;align-items:center;gap:5px}
 .leg-sq{width:11px;height:11px;border-radius:2px;flex-shrink:0}
 table{width:100%;border-collapse:collapse;font-size:12px}
-thead tr{background:#444441;color:#fff}
+thead tr{background:linear-gradient(135deg,#1E7A34,#0F4D20);color:#fff}
 th{padding:8px 10px;font-weight:500;font-size:11px;text-align:left}
 th.r{text-align:right}
 td{padding:7px 10px;color:#2c2c2a}
 td.r{text-align:right}
 tr:nth-child(even) td{background:#fafaf8}
-tr:hover td{background:#f1efe8}
+tr:hover td{background:#eaf5ed}
 .tfoot td{background:#d3d1c7!important;font-weight:500;color:#2c2c2a}
-.h-val{color:#185fa5;font-weight:500}
-.m-val{color:#ba7517;font-weight:500}
-.t-val{color:#444441;font-weight:500}
+.h-val{color:#1E7A34;font-weight:500}
+.m-val{color:#B8860B;font-weight:500}
+.t-val{color:#0F4D20;font-weight:500}
 .pct-bar{display:inline-block;height:6px;border-radius:3px;vertical-align:middle;margin-right:5px}
 footer{padding:12px 24px;background:#f1efe8;border-top:0.5px solid #d3d1c7;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px}
 footer p{font-size:11px;color:#888780}
-footer a{color:#185fa5;text-decoration:none;font-size:11px}
+footer a{color:#1E7A34;text-decoration:none;font-size:11px}
 footer a:hover{text-decoration:underline}
 @media(max-width:640px){.metrics{grid-template-columns:repeat(2,1fr)}.metric-value{font-size:18px}}
 </style>
@@ -55,7 +55,7 @@ footer a:hover{text-decoration:underline}
 <div class="wrap">
 <div class="header">
   <h1>Personal Investigador por Categoría</h1>
-  <p>Universidad Complutense de Madrid · Datos a abril 2026</p>
+  <p>Universidad Complutense de Madrid · Datos a fecha: 01/07/2026</p>
 </div>
 <div class="content">
 
@@ -104,8 +104,8 @@ footer a:hover{text-decoration:underline}
     <thead>
       <tr>
         <th>Categoría</th>
-        <th class="r" style="color:#85b7eb">Hombres</th>
-        <th class="r" style="color:#fac775">Mujeres</th>
+        <th class="r" style="color:#bfe3c9">Hombres</th>
+        <th class="r" style="color:#fce3a8">Mujeres</th>
         <th class="r">% Mujeres</th>
         <th class="r">Total</th>
         <th style="min-width:120px">Distribución</th>
@@ -118,21 +118,32 @@ footer a:hover{text-decoration:underline}
 
 </div>
 <footer>
-  <p>Portal de Transparencia UCM · Fuente: <a href="https://www.ucm.es/pinves" target="_blank">Servicio de Personal Investigador</a> · Datos actualizados: abril 2026</p>
+  <p>Portal de Transparencia UCM · Fuente: <a href="https://www.ucm.es/pinves" target="_blank">Servicio de Personal Investigador</a> · Datos extraídos el 07/07/2026</p>
 </footer>
 </div>
 
 <script>
 const raw = [
-  {cat:'Predoctorales',        h:419, m:420, t:839},
-  {cat:'Postdoctorales',       h:68,  m:44,  t:112},
-  {cat:'Inv. Postdoc. Distinguido', h:3, m:2, t:5},
-  {cat:'Contratado por proyecto', h:196, m:231, t:427},
-  {cat:'Personal Técnico Emp. Joven CM', h:26, m:40, t:66},
-  {cat:'Personal Técnico Apoyo MICIU', h:4, m:5, t:9}
+  {cat:'Cesar Nombela', h:8, m:6, t:14},
+  {cat:'Contratado por proyecto', h:204, m:249, t:453},
+  {cat:'FPI', h:96, m:103, t:199},
+  {cat:'FPU', h:110, m:83, t:193},
+  {cat:'Investigador distinguido', h:1, m:0, t:1},
+  {cat:'Investigador Distinguido Beatriz Galindo', h:2, m:2, t:4},
+  {cat:'Juan de la Cierva', h:9, m:5, t:14},
+  {cat:'Marie Curie', h:4, m:4, t:8},
+  {cat:'Personal Técnico', h:21, m:34, t:55},
+  {cat:'Posdoctoral Real Colegio Complutense', h:1, m:0, t:1},
+  {cat:'Predoctorales CM', h:79, m:82, t:161},
+  {cat:'Predoctorales Otros Organismos', h:11, m:12, t:23},
+  {cat:'Predoctorales UCM', h:120, m:140, t:260},
+  {cat:'Ramón Areces', h:1, m:1, t:2},
+  {cat:'Ramón y Cajal', h:33, m:22, t:55},
+  {cat:'Talento Mod 1 CM', h:10, m:5, t:15},
+  {cat:'Técnico', h:4, m:4, t:8}
 ];
 
-const COLORS = {h:'#185fa5', m:'#ba7517'};
+const COLORS = {h:'#1E7A34', m:'#B8860B'};
 let chartType='bar', sortKey='a', showH=true, showM=true;
 let chartInst = null;
 
@@ -153,8 +164,8 @@ function sorted(){
 function buildMetrics(){
   document.getElementById('metrics').innerHTML=`
     <div class="metric"><div class="metric-label">Total personal investigador</div><div class="metric-value">${totalT.toLocaleString('es-ES')}</div><div class="metric-sub">personas</div></div>
-    <div class="metric"><div class="metric-label">Hombres</div><div class="metric-value" style="color:#185fa5">${totalH.toLocaleString('es-ES')}</div><div class="metric-sub">${Math.round(totalH/totalT*100)}% del total</div></div>
-    <div class="metric"><div class="metric-label">Mujeres</div><div class="metric-value" style="color:#ba7517">${totalM.toLocaleString('es-ES')}</div><div class="metric-sub">${pctF}% del total</div></div>
+    <div class="metric"><div class="metric-label">Hombres</div><div class="metric-value" style="color:#1E7A34">${totalH.toLocaleString('es-ES')}</div><div class="metric-sub">${Math.round(totalH/totalT*100)}% del total</div></div>
+    <div class="metric"><div class="metric-label">Mujeres</div><div class="metric-value" style="color:#B8860B">${totalM.toLocaleString('es-ES')}</div><div class="metric-sub">${pctF}% del total</div></div>
     <div class="metric"><div class="metric-label">Categorías</div><div class="metric-value">${raw.length}</div><div class="metric-sub">tipos de contrato</div></div>
   `;
 }
@@ -165,11 +176,11 @@ function buildChart(){
   const datasets=[];
   if(chartType==='pie'){
     const pieData=d.map(r=>(showH&&showM)?r.t:showH?r.h:r.m);
-    const colors=['#185fa5','#ba7517','#3b6d11','#a32d2d','#534ab7','#0f6e56'];
+    const colors=['#1E7A34','#B8860B','#3b6d11','#5f9e6e','#8fbf9a','#0F4D20','#c9a13a','#729e3f','#a3c9ab','#d9b45f','#4d8f5b','#75ac53','#e0c785','#347a4a','#93b25e','#bfe3c9','#f0d9a0'];
     datasets.push({data:pieData,backgroundColor:colors,borderWidth:2,borderColor:'#fff'});
   } else {
-    if(showH) datasets.push({label:'Hombres',data:d.map(r=>r.h),backgroundColor:'#378add',borderColor:'#185fa5',borderWidth:1,borderRadius:3,barPercentage:0.7,categoryPercentage:0.75});
-    if(showM) datasets.push({label:'Mujeres',data:d.map(r=>r.m),backgroundColor:'#ef9f27',borderColor:'#ba7517',borderWidth:1,borderRadius:3,barPercentage:0.7,categoryPercentage:0.75});
+    if(showH) datasets.push({label:'Hombres',data:d.map(r=>r.h),backgroundColor:'#3b9c54',borderColor:'#1E7A34',borderWidth:1,borderRadius:3,barPercentage:0.7,categoryPercentage:0.75});
+    if(showM) datasets.push({label:'Mujeres',data:d.map(r=>r.m),backgroundColor:'#D4A017',borderColor:'#B8860B',borderWidth:1,borderRadius:3,barPercentage:0.7,categoryPercentage:0.75});
   }
 
   const ctx=document.getElementById('chart').getContext('2d');
@@ -188,7 +199,7 @@ function buildChart(){
       plugins:{
         legend:{display:false},
         tooltip:{
-          backgroundColor:'rgba(44,44,42,0.95)',
+          backgroundColor:'rgba(15,77,32,0.95)',
           padding:10,
           titleFont:{size:11},
           bodyFont:{size:11},
@@ -229,12 +240,12 @@ function buildChart(){
 function buildLegend(d,isPie){
   const lg=document.getElementById('legend');
   if(isPie){
-    const colors=['#185fa5','#ba7517','#3b6d11','#a32d2d','#534ab7','#0f6e56'];
+    const colors=['#1E7A34','#B8860B','#3b6d11','#5f9e6e','#8fbf9a','#0F4D20','#c9a13a','#729e3f','#a3c9ab','#d9b45f','#4d8f5b','#75ac53','#e0c785','#347a4a','#93b25e','#bfe3c9','#f0d9a0'];
     lg.innerHTML=d.map((r,i)=>`<span><span class="leg-sq" style="background:${colors[i]}"></span>${r.cat} (${r.t})</span>`).join('');
   } else {
     const items=[];
-    if(showH) items.push(`<span><span class="leg-sq" style="background:#378add"></span>Hombres (${totalH.toLocaleString('es-ES')})</span>`);
-    if(showM) items.push(`<span><span class="leg-sq" style="background:#ef9f27"></span>Mujeres (${totalM.toLocaleString('es-ES')})</span>`);
+    if(showH) items.push(`<span><span class="leg-sq" style="background:#3b9c54"></span>Hombres (${totalH.toLocaleString('es-ES')})</span>`);
+    if(showM) items.push(`<span><span class="leg-sq" style="background:#D4A017"></span>Mujeres (${totalM.toLocaleString('es-ES')})</span>`);
     lg.innerHTML=items.join('');
   }
 }
@@ -252,8 +263,8 @@ function buildTable(){
       <td class="r" style="color:#5f5e5a">${pct}%</td>
       <td class="r t-val">${r.t.toLocaleString('es-ES')}</td>
       <td><div style="display:flex;align-items:center;gap:3px">
-        <span class="pct-bar" style="width:${Math.round(r.h/r.t*barW)}px;background:#378add"></span>
-        <span class="pct-bar" style="width:${Math.round(r.m/r.t*barW)}px;background:#ef9f27"></span>
+        <span class="pct-bar" style="width:${Math.round(r.h/r.t*barW)}px;background:#3b9c54"></span>
+        <span class="pct-bar" style="width:${Math.round(r.m/r.t*barW)}px;background:#D4A017"></span>
       </div></td>
     </tr>`;
   }).join('');
@@ -298,7 +309,7 @@ function downloadCSV(){
   csv+=`TOTAL,${totalH},${totalM},${pctF}%,${totalT}\n`;
   const a=document.createElement('a');
   a.href='data:text/csv;charset=utf-8,'+encodeURIComponent('\uFEFF'+csv);
-  a.download='personal_investigador_ucm_abril2026.csv';
+  a.download='personal_investigador_ucm_julio2026.csv';
   a.click();
 }
 
